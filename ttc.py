@@ -4,6 +4,7 @@ people = csvReader("people.csv")
 
 for person in people.values():
     print(person.preferences)
+#hjdf
 
 def hi():
     return
