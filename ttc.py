@@ -6,7 +6,7 @@ preferences = Preference_Base.csvReader('preferences.csv')
 
 def top_trading_cycles(peopleDict, preferencesDict):
     unassigned = set(peopleDict.keys())
-    matchResult = {}
+    matchResult = []
 
     while unassigned:
         visited = set()
@@ -27,20 +27,29 @@ def top_trading_cycles(peopleDict, preferencesDict):
                 break
 
             curr = top_preference
+        
+        #cycle
         if curr in visited:
             cycle_index = current_path.index(curr)
             cycle = current_path[cycle_index:]
 
             for i in range(len(cycle)):
-                giver = cycle[i]
-                receiver = cycle[(i + 1) % len(cycle)]
-                match_result[giver] = receiver
-                peopleDict[giver].set_actual_match(receiver)
-                unassigned.remove(giver)
+                agent = cycle[i]
+                #assign the next resource in the cycle
+                resource = cycle[(i + 1) % len(cycle)]
+                #update outcome
+                peopleDict[agent].actualMatch = resource
+                unassigned.remove(agent)
+                
+                personName = f"{peopleDict.firstName} {peopleDict.lastName}
+                match_result.append([personName, resource])
 
-                giverName = f"{peopleDict[giver].firstName} {peopleDict[giver].lastName}"
-                receiverName = f"{peopleDict[receiver].firstName} {peopleDict[receiver].lastName}"
-                match_result.append((giver, giverName, receiver, receiverName))
+                
+                #change output format
+                #returns list of person, number, preference, number
+                #giverName = f"{peopleDict[giver].firstName} {peopleDict[giver].lastName}"
+                #receiverName = f"{peopleDict[receiver].firstName} {peopleDict[receiver].lastName}"
+                #match_result.append((giver, giverName, receiver, receiverName))
     
     return match_result
     
