@@ -1,4 +1,4 @@
-import Matching_Algorithms; import csv; import random; import math
+import Matching_Algorithms; import csv; import random; import math; import Preference_Base
 
 peopleDictionary = Matching_Algorithms.csvReader('people.csv')
 
@@ -43,13 +43,46 @@ if randomBoolean == "True":
      # This shuffler will give us the random order in which agents will choose their objects of preference
     random.shuffle(iDNumberList)
 
-for i in iDNumberList:
-    print(i)
+
+
+#Algorithm 
+def output(file):
+
+    preferenceDictionary = Preference_Base.csvReader(file)
+    outputList = {}
+
+    for i in iDNumberList:
+        personOfInterest = peopleDictionary[i].preferences.values()
+        for j in personOfInterest:
+            if preferenceDictionary[j] > 0:
+                preferenceDictionary[j] -= 1
+                peopleDictionary[i].actualMatch = j
+                outputList[peopleDictionary[i].IDNumber] = j
+                break
+            else:
+                continue
+
+    return list(outputList.items())
+
+def printer(file):
+    print(output(file))
+
+printer('preferences.csv')
+
+# for key, value in outputList.items():
+#     print(f'{key} : {value}')
+
+# for i in iDNumberList:
+#     print(i)
+#     print(peopleDictionary[i].preferences.values())
+#     print(peopleDictionary[i].actualMatch)
+
+
 
 # To Do
-# 1. Make a new csv format file with items and number of times in can be allocated
+# 1. Make a new csv format file with items and number of times in can be allocated - added it to CS396 Format of CSV
 # 2. Make a dictionary of items and number of times it can be allocated
-    # kw = Preference, value = number of times it can be allocated
+    # kw = Preference, value = number of times it can be allocated - made Preference_Base.py which takes the csv and makes this dictionary
 # 3. Make Algorithm
     # Use Ordered List Either Unshuffled or Shuffled
     # For Each Person:
