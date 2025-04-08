@@ -2,7 +2,8 @@ import csv
 import random
 import Gale_Shapley
 
-#We will be importing the same csv reader as the Gale-Shapley algorithm.
+#We will be importing the same csv reader as the Gale-Shapley algorithm. The goal of the reader is to convert the preferences and number of each item csvs into a usable list.
+
 
 def probabilisitc_serial(agent_preferences, items_list):
     assignments_dict = {agent: {item: 0.0 for item in items_list} for agent in agent_preferences}
