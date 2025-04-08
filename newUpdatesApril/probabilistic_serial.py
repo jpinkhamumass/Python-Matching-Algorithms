@@ -1,5 +1,8 @@
 import csv
 import random
+import Gale_Shapley
+
+#We will be importing the same csv reader as the Gale-Shapley algorithm.
 
 def probabilisitc_serial(agent_preferences, items_list):
     assignments_dict = {agent: {item: 0.0 for item in items_list} for agent in agent_preferences}
@@ -35,14 +38,13 @@ def probabilisitc_serial(agent_preferences, items_list):
             
     return list(output_dict.items())
 
+
+
 # Example usage
-agent_preferences = {
-    "A": ["X", "Y", "Z"],
-    "B": ["Y", "X", "Z"],
-    "C": ["Z", "X", "Y"]
-}
+preferences_file = 'men_preferences.csv'  # Replace with your actual preferences CSV file path
+items_file = 'prob_items.csv'  # Replace with your actual items CSV file path
 
-items_list = ["X", "Y", "Z"]
-
-allocation = probabilisitc_serial(agent_preferences, items_list)
-print(allocation)
+preferences = Gale_Shapley.csvReader_gale(preferences_file)
+items = Gale_Shapley.csvReader_gale(items_file)
+allocation_result = probabilisitc_serial(preferences, items)
+print(allocation_result)
