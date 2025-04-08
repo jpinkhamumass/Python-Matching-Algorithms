@@ -65,25 +65,3 @@ def printer(file):
 
 printer('preferences.csv')
 
-# for key, value in outputList.items():
-#     print(f'{key} : {value}')
-
-# for i in iDNumberList:
-#     print(i)
-#     print(peopleDictionary[i].preferences.values())
-#     print(peopleDictionary[i].actualMatch)
-
-
-
-# To Do
-# 1. Make a new csv format file with items and number of times in can be allocated - added it to CS396 Format of CSV
-# 2. Make a dictionary of items and number of times it can be allocated
-    # kw = Preference, value = number of times it can be allocated - made Preference_Base.py which takes the csv and makes this dictionary
-# 3. Make Algorithm
-    # Use Ordered List Either Unshuffled or Shuffled
-    # For Each Person:
-        # Check to see if preference is available
-        # Yes: Decrement, Allocate
-        # No: Go to next preference
-
-# 4. Return Preferences In Some Way
