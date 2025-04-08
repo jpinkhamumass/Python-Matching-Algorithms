@@ -23,8 +23,6 @@ def randomness():
         print("Error: Please enter True or False: ")
         randomness()
 
-count = len(peopleDictionary) # Number of people in input
-
 def iDNumberListMaker(peopleDictionary): # Makes a list of people ID's
     IDNumberList = []
     for person in peopleDictionary.keys():
