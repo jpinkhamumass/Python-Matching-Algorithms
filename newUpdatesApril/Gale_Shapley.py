@@ -1,6 +1,6 @@
 import csv
 
-#This code is a csv reader for the Gale-Shapley algorithm, which reads in the male and female preferences within the code.
+#This code is a csv reader for the Gale-Shapley algorithm, which reads in the preferences of the 2 groups (i.e. male and female) within the code.
 def csvReader_gale(file):
     #The preferenceDict is a dictionary that will hold the preferences of each individual. The key is the Individual's ID and the value is a list of their preferences.
     preferenceDict = {} 
