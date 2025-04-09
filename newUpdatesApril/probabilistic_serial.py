@@ -69,7 +69,7 @@ def probabilisitc_serial(agent_preferences, items_list):
 
 
 # Example usage using the Gale-Shapley reader and specific test case files
-preferences_file = 'men_preferences.csv'  # Replace with your actual preferences CSV file path
+preferences_file = 'psr_agentpreferences.csv'  # Replace with your actual preferences CSV file path
 items_file = 'prob_items.csv'  # Replace with your actual items CSV file path
 
 preferences = Gale_Shapley.csvReader_gale(preferences_file)
