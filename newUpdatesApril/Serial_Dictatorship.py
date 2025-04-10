@@ -1,7 +1,7 @@
 import newUpdatesApril.Serial_Dictatorship_Reader as Serial_Dictatorship_Reader; import csv; import random; import math; import Preference_Base
 
 # Creates a dictionary of people and their preferences
-peopleDictionary = Serial_Dictatorship_Reader.csvReader('people.csv')
+peopleArray = Serial_Dictatorship_Reader.csvReader('people.csv')
 
 #Initialize a boolean random to be input later 
 randomBoolean = "False"
@@ -23,40 +23,26 @@ def randomness():
         print("Error: Please enter True or False: ")
         randomness()
 
-def iDNumberListMaker(peopleDictionary): # Makes a list of people ID's
-    IDNumberList = []
-    for person in peopleDictionary.keys():
-        IDNumberList.append(person)
-    return IDNumberList
-
-iDNumberList = iDNumberListMaker(peopleDictionary) # Makes a list of people ID's from input
-
 randomness() # User determines if input order random or not
-
-
 
 if randomBoolean == "True": 
      # This shuffler will give us the random order in which agents will choose their objects of preference
-    random.shuffle(iDNumberList)
+    random.shuffle(peopleArray)
 
-
-
-#Algorithm 
+# Algorithm
 def output(file):
-
-    preferenceDictionary = Preference_Base.csvReader(file) 
+    preferenceDictionary = Preference_Base.csvReader(file)
     outputList = {}
 
-    for i in iDNumberList: # per person
-        personOfInterest = peopleDictionary[i].preferences.values() # gets persons preferences
-        for j in personOfInterest: # per preference
-            if preferenceDictionary[j] > 0: # preference still has avaiability
-                preferenceDictionary[j] -= 1 # decrements number of items that can be allocated
-                peopleDictionary[i].actualMatch = j # updates match
-                outputList[peopleDictionary[i].IDNumber] = j # updates output list
-                break
-            else:
-                continue
+    for personRow in peopleArray:
+        personID = personRow[0]
+        preferences = personRow[1:-1]  # Skip first (ID) and last (extra)
+
+        for pref in preferences:
+            if pref in preferenceDictionary and preferenceDictionary[pref] > 0:
+                preferenceDictionary[pref] -= 1
+                outputList[personID] = pref
+                break  # Move to next person after assigning
 
     return list(outputList.items())
 
@@ -64,4 +50,5 @@ def printer(file):
     print(output(file))
 
 printer('preferences.csv')
+
 
