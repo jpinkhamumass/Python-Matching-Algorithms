@@ -1,7 +1,7 @@
-import Matching_Algorithms; import csv; import random; import math; import Preference_Base
+import newUpdatesApril.Serial_Dictatorship_Reader as Serial_Dictatorship_Reader; import csv; import random; import math; import Preference_Base
 
 # Creates a dictionary of people and their preferences
-peopleDictionary = Matching_Algorithms.csvReader('people.csv')
+peopleDictionary = Serial_Dictatorship_Reader.csvReader('people.csv')
 
 #Initialize a boolean random to be input later 
 randomBoolean = "False"
