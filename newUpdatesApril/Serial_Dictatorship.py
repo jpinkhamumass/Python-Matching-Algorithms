@@ -1,7 +1,7 @@
 import newUpdatesApril.Serial_Dictatorship_Reader as Serial_Dictatorship_Reader; import csv; import random; import math; import Preference_Base
 
 # Creates a dictionary of people and their preferences
-peopleArray = Serial_Dictatorship_Reader.csvReader('people.csv')
+peopleArray = Serial_Dictatorship_Reader.csvReader('updatedData10.csv')
 
 #Initialize a boolean random to be input later 
 randomBoolean = "False"
@@ -49,6 +49,6 @@ def output(file):
 def printer(file): 
     print(output(file))
 
-printer('preferences.csv')
+printer('dataItems.csv')
 
 
