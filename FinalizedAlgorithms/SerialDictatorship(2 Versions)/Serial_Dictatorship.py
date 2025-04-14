@@ -1,4 +1,4 @@
-import Serial_Dictatorship_Reader as Serial_Dictatorship_Reader; import csv; import random; import math; import preferenceReader
+import Serial_Dictatorship_Reader as Serial_Dictatorship_Reader; import csv; import random; import math; import Item_Capacity_Reader
 
 # Creates a dictionary of people and their preferences
 peopleArray = Serial_Dictatorship_Reader.csvReader('Pref1.csv')  
@@ -31,7 +31,7 @@ if randomBoolean == "True":
 
 # Algorithm
 def output(file):
-    preferenceDictionary = preferenceReader.csvReader(file)
+    preferenceDictionary = Item_Capacity_Reader.csvReader(file)
     
 
     outputList = {}
