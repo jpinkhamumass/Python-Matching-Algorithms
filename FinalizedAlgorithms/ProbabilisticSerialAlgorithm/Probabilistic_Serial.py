@@ -8,10 +8,10 @@ def read_agent_preferences(file_path):
     agent_preferences = {}
     with open(file_path, newline='') as csvfile:
         reader = csv.reader(csvfile)
-        headers = next(reader)  # Skip the header row
+        headers = next(reader) 
         for row in reader:
             agent_id = row[0]
-            preferences = row[1:11]  # Keep preferences as strings (can be numbers or letters)
+            preferences = row[1:11]  
             agent_preferences[agent_id] = preferences
     return agent_preferences
 
@@ -20,7 +20,7 @@ def read_items_list(file_path):
     item_capacities = {}
     with open(file_path, newline='') as csvfile:
         reader = csv.reader(csvfile)
-        headers = next(reader)  # Skip the header row
+        headers = next(reader) 
         for row in reader:
             item = row[0]
             capacity = int(row[1])
