@@ -8,10 +8,10 @@ def read_agent_preferences(file_path):
     agent_preferences = {}
     with open(file_path, newline='') as csvfile:
         reader = csv.reader(csvfile)
-        headers = next(reader)  
+        headers = next(reader)  # Skip the header row
         for row in reader:
             agent_id = row[0]
-            preferences = row[1:11]  
+            preferences = row[1:11]  # Keep preferences as strings (can be numbers or letters)
             agent_preferences[agent_id] = preferences
     return agent_preferences
 
@@ -20,7 +20,7 @@ def read_items_list(file_path):
     item_capacities = {}
     with open(file_path, newline='') as csvfile:
         reader = csv.reader(csvfile)
-        headers = next(reader) 
+        headers = next(reader)  # Skip the header row
         for row in reader:
             item = row[0]
             capacity = int(row[1])
@@ -30,7 +30,11 @@ def read_items_list(file_path):
 
 #Probabilistic Serial Algorithm
 
-def probabilistic_serial(agent_preferences, item_capacities):
+def probabilistic_serial(preferences_path,items_path):
+
+    agent_preferences = read_agent_preferences(preferences_path)
+    item_capacities = read_items_list(items_path)
+    
     #Making a copy of the item capacities from the reader function. This tells us how much of an items is left for "consumption"
     remaining_capacity = item_capacities.copy()
 
@@ -100,10 +104,6 @@ def probabilistic_serial(agent_preferences, item_capacities):
                     if remaining_capacity[current_item] <= 1e-6:
                         remaining_capacity[current_item] = 0
 
-    return assignments
-
-#Lottery system for final allocations
-def lottery_allocations(assignments, item_capacities):
 
     #Dictionary that will be outputted with the final assignments.
     final_assignment = {}
@@ -155,10 +155,5 @@ def lottery_allocations(assignments, item_capacities):
 
 
 # Example usage
-preferences_file = 'Pref1.csv' 
-items_file = 'dataItems.csv'  
-items_list = read_items_list(items_file)
-agent_preferences = read_agent_preferences(preferences_file)
-assignments = probabilistic_serial(agent_preferences, items_list)
-final_assignments = lottery_allocations(assignments, items_list)
-print(final_assignments)
+assignments = probabilistic_serial('Pref1.csv', 'dataItems.csv')
+print(assignments)
