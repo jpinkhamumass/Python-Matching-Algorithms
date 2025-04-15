@@ -1,10 +1,5 @@
 import Serial_Dictatorship_Reader as Serial_Dictatorship_Reader; import csv; import random; import math; import Item_Capacity_Reader
 
-# Creates a dictionary of people and their preferences
-peopleArray = Serial_Dictatorship_Reader.csvReader('Pref1.csv')  
-
-#Initialize a boolean random to be input later 
-randomBoolean = "False"
 
 def randomness():
     global randomBoolean  # Declare randomBoolean as global
@@ -23,16 +18,24 @@ def randomness():
         print("Error: Please enter True or False: ")
         randomness()
 
-randomness() # User determines if input order random or not
 
-if randomBoolean == "True": 
-     # This shuffler will give us the random order in which agents will choose their objects of preference
-    random.shuffle(peopleArray)
 
 # Algorithm
-def output(file):
-    preferenceDictionary = Item_Capacity_Reader.csvReader(file)
-    
+def output(prefFile, itemFile):
+   
+    # Creates a dictionary of people and their preferences
+    peopleArray = peopleArray = Serial_Dictatorship_Reader.csvReader(prefFile)
+
+    #Initialize a boolean random to be input later 
+    randomBoolean = "False"
+
+    randomness() # User determines if input order random or not
+
+    if randomBoolean == "True": 
+    # This shuffler will give us the random order in which agents will choose their objects of preference
+        random.shuffle(peopleArray)
+
+    preferenceDictionary = Item_Capacity_Reader.csvReader(itemFile)
 
     outputList = {}
 
@@ -49,7 +52,7 @@ def output(file):
 
     return list(outputList.items())
 
-def printer(file): 
-    print(output(file))
+def printer(file1, file2): 
+    print(output(file1, file2))
 
-printer('dataItems.csv') # Prints the output of the algorithm
+printer('Pref1.csv','dataItems.csv') # Prints the output of the algorithm
