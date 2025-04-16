@@ -1,4 +1,4 @@
-import Probabilistic_Serial, Serial_Dictatorship_Reader, Item_Capacity_Reader, csv, random
+import Probabilistic_Serial, Serial_Dictatorship_Reader, Item_Capacity_Reader, csv, random, Gale_Shapley
 
 
 def statTestPSR(file_path1, file_path2):
@@ -130,17 +130,63 @@ def statTestRandomSerialDict(prefFile,itemFile):
 
     return ((counter/1000)/(agent_counter/1000)) * 100
 
+def statTestGS(prefGroup1,prefGroup2):
+    counter = 0
+    agent_counter = 0
+    
+    for count in range(1,1001):
+    
+        men_prefs = Gale_Shapley.csvReader_gale(prefGroup1)
+        women_prefs = Gale_Shapley.csvReader_gale(prefGroup2)
 
+        matches = Gale_Shapley.gale_shapley(men_prefs,women_prefs)
+       
+
+        for agent in matches:
+            agent_counter += 2
+            agentGroup2 = agent[0]
+            
+            agentGroup1 = agent[1]
+          
+
+
+            temp_list1 = []
+        
+            tempy = women_prefs[agentGroup2]
+            temp_list1.append(tempy[0])
+            temp_list1.append(tempy[1])
+            temp_list1.append(tempy[2])
+            
+
+            if agentGroup1 in temp_list1:
+                counter += 1
+
+            temp_list2 = []
+
+            tempy2 = men_prefs[agentGroup1]
+            temp_list2.append(tempy2[0])
+            temp_list2.append(tempy2[1])
+            temp_list2.append(tempy2[2])
+
+            if agentGroup2 in temp_list2:
+                counter += 1
+            
+            else: 
+                continue
+        
+        return ((counter/1000)/(agent_counter/1000)) * 100
 
 
 resultsPSR = statTestPSR('Pref1.csv', 'dataItems.csv')
-# print(resultsPSR)
+# # print(resultsPSR)
 
 
 resultsSD = statTestSerialDict('Pref1.csv','dataitems.csv')
-# print(resultsSD)
+# # print(resultsSD)
 
 resultsRSD = statTestRandomSerialDict('Pref1.csv','dataitems.csv')
-# print(resultsRSD)
+# # print(resultsRSD)
 
-print(f'The results show that PSR has a % of {resultsPSR}, SD had a % of {resultsSD} and RSD had a % of {resultsRSD}.')
+resultsGS = statTestGS('Male.csv','Female.csv')
+
+print(f'The results show that PSR has a % of {resultsPSR}, SD has a % of {resultsSD}, RSD has a % of {resultsRSD}, and GS has a % of {resultsGS}.')
