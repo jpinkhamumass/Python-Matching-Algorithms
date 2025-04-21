@@ -356,9 +356,9 @@ axs[1].set_xlim(0, max(percentageData) + 10)
 axs[0].barh(labels, utilityData, alpha=0.5, color='maroon')
 for i, value in enumerate(utilityData):
     axs[0].text(value, i, f'{value:.2f}', va='center', fontsize=8)
-axs[0].set_xlabel('Utility')
+axs[0].set_xlabel('Avg. Total Utility of Each Algorithm: 3 Points for 1st Choice, 1 Point for 2nd Choice')
 axs[0].set_ylabel('Algorithms')
-axs[0].set_title('Avg. Total Utility of Each Algorithm: 3 Points for 1st Choice, 1 Point for 2nd Choice')
+axs[0].set_title('Utility of Each Algorithm')
 axs[0].set_xlim(0, max(utilityData) + 10)
 
 plt.tight_layout()
