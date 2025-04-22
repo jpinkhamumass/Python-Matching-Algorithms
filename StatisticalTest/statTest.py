@@ -344,7 +344,7 @@ labels = ['PSR', 'SD', 'RSD', 'GS']
 
 fig, axs = plt.subplots(2, 1, figsize=(8, 10))
 
-axs[1].barh(labels, percentageData, alpha=0.5, color='maroon')
+axs[1].barh(labels, percentageData, alpha=0.5, color=['red', 'blue', 'green', 'orange'])
 for i, value in enumerate(percentageData):
     axs[1].text(value, i, f'{value:.2f}%', va='center', fontsize=8)
 axs[1].set_xlabel('Percentage')
@@ -353,7 +353,7 @@ axs[1].set_title('Percentage of Each Agent Getting Their Top 3 Choices')
 axs[1].set_xlim(0, max(percentageData) + 10)
 
 
-axs[0].barh(labels, utilityData, alpha=0.5, color='maroon')
+axs[0].barh(labels, utilityData, alpha=0.5, color=['red', 'blue', 'green', 'orange'])
 for i, value in enumerate(utilityData):
     axs[0].text(value, i, f'{value:.2f}', va='center', fontsize=8)
 axs[0].set_xlabel('Avg. Total Utility of Each Algorithm: 3 Points for 1st Choice, 1 Point for 2nd Choice')
