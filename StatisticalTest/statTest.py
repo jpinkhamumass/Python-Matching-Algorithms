@@ -3,104 +3,218 @@ import Probabilistic_Serial, Serial_Dictatorship_Reader, Item_Capacity_Reader, c
 import matplotlib.pyplot as plt
 
 
+#need a seperate reader for psr stat test to make sure we can extract top 3 choices for each agent.
+def reader_psr1(file_path):
+    with open(file_path, mode='r') as file:
+        reader = csv.reader(file)
+    
+        pref_dict = {}
+        # Iterate through each row in the CSV
+        headers = next(reader)  # Read headers
+        for row in reader:
+
+            pref_list = []
+            
+            # Get the student's preferences and assigned group
+            first = row[1]
+            second = row[2]
+            third = row[3]
+            name = row[0]
+
+            pref_list.append(first)
+            pref_list.append(second)
+            pref_list.append(third)
+            pref_dict[name] = pref_list
+    return pref_dict
+
+def reader_psr2(file_path):
+    with open(file_path, mode='r') as file:
+        reader = csv.reader(file)
+    
+        pref_dict = {}
+        # Iterate through each row in the CSV
+        headers = next(reader)  # Read headers
+        for row in reader:
+
+            pref_list = []
+            
+            # Get the student's preferences and assigned group
+            first = row[1]
+            second = row[2]
+            third = row[3]
+            fourth = row[4]
+            fifth = row[5]
+            sixth = row[6]
+            seventh = row[7]
+            eighth = row[8]
+            ninth = row[9]
+            tenth = row[10]
+            name = row[0]
+
+            pref_list.append(first)
+            pref_list.append(second)
+            pref_list.append(third)
+            pref_list.append(fourth)
+            pref_list.append(fifth)
+            pref_list.append(sixth)
+            pref_list.append(seventh)
+            pref_list.append(eighth)
+            pref_list.append(ninth)
+            pref_list.append(tenth)
+            pref_dict[name] = pref_list
+    return pref_dict
+
+
+# print(reader_psr2('Pref1.csv'))
+
+
 def statTestPSR(file_path1, file_path2):
 
-    utilityPointCounter = 0 #This counter is made to make our utilit graph. We are appointing 3 points for getting 1st choice and 2 points for getting 2nd choice. All other allocations are 0 points. 
+    referencePrefs = reader_psr1(file_path1)
+
+    utilityPrefs = reader_psr2(file_path1)
+
+    utilityList = [] #All utility values for all agents in this list. The minimum valie will be the utility of the worst agent, and the maximum will be the utility of the best agent.
+    #Whole point of utilityList is to get the minimum utility value to represent egalitarian welfare.
+
+    #Utility will work on a decreasing scale. Getting choice 1 will be 10 points, choice 2 will be 9 points, and so on. Lowest utility will be 1 point for choice 10.
     
-    counter = 0
+    probabilityPointCounter = 0
+
     agent_counter = 0
-    for count in range(1,1001):
-        preferences = Probabilistic_Serial.read_agent_preferences(file_path1)
-        results = Probabilistic_Serial.probabilistic_serial(file_path1, file_path2)
+    
+    preferences = Probabilistic_Serial.read_agent_preferences(file_path1)
+    results = Probabilistic_Serial.probabilistic_serial(file_path1, file_path2)
 
 
-        for agent in results:
-            agent_counter += 1
-            temp_agent = agent[0]
-            temp_agent_choice = agent[1]
+  
+    for agent, items in results.items():
+        agent_counter += 1
 
+        for item, fraction in items.items():
 
-            temp_list = []
+            if item in referencePrefs[agent]:
+                probabilityPointCounter += fraction
+
+    for agentName, dictList in results.items():
+        utility = 0
         
-            tempy = preferences[temp_agent]
-            temp_list.append(tempy[0])
-            temp_list.append(tempy[1])
-            temp_list.append(tempy[2])
+        for item, fraction in dictList.items():
+            if item in utilityPrefs[agentName]:
+                if item == utilityPrefs[agentName][0]:
+                    utility += 10 * fraction
+                elif item == utilityPrefs[agentName][1]:
+                    utility += 9 * fraction
+                elif item == utilityPrefs[agentName][2]:
+                    utility += 8 * fraction
+                elif item == utilityPrefs[agentName][3]:
+                    utility += 7 * fraction
+                elif item == utilityPrefs[agentName][4]:
+                    utility += 6 * fraction
+                elif item == utilityPrefs[agentName][5]:
+                    utility += 5 * fraction
+                elif item == utilityPrefs[agentName][6]:
+                    utility += 4 * fraction
+                elif item == utilityPrefs[agentName][7]:
+                    utility += 3 * fraction
+                elif item == utilityPrefs[agentName][8]:
+                    utility += 2 * fraction
+                elif item == utilityPrefs[agentName][9]:
+                    utility += 1 * fraction
 
-            if temp_agent_choice in temp_list:
-                counter += 1
+        utilityList.append(utility)
+   
+    return (probabilityPointCounter/agent_counter) * 100, min(utilityList)
 
-            if temp_agent_choice == temp_list[0]:
-                utilityPointCounter += 3
-            elif temp_agent_choice == temp_list[1]:
-                utilityPointCounter += 1
-            
-
-            else:
-                continue
-        
-
-    return ((counter/1000)/(agent_counter/1000)) * 100, utilityPointCounter/1000
 
 def statTestSerialDict(prefFile,itemFile):
     
-    utilityPointCounter = 0 #This counter is made to make our utilit graph. We are appointing 3 points for getting 1st choice and 2 points for getting 2nd choice. All other allocations are 0 points. 
     counter = 0
     agent_counter = 0
 
-    for count in range(1,1001):
+   
 
-         # Creates a dictionary of people and their preferences
-        peopleArray = Serial_Dictatorship_Reader.csvReader(prefFile)
+        # Creates a dictionary of people and their preferences
+    peopleArray = Serial_Dictatorship_Reader.csvReader(prefFile)
 
-        preferenceDictionary = Item_Capacity_Reader.csvReader(itemFile)
+    preferenceDictionary = Item_Capacity_Reader.csvReader(itemFile)
 
-        outputList = {}
+    outputList = {}
 
-        for personRow in peopleArray:
-            personID = personRow[0]
-            preferences = personRow[1:-1]  # Skip first (ID) and last (extra)
+    for personRow in peopleArray:
+        personID = personRow[0]
+        preferences = personRow[1:-1]  # Skip first (ID) and last (extra)
 
-            for pref in preferences:
-                if pref in preferenceDictionary and preferenceDictionary[pref] > 0:
-                    preferenceDictionary[pref] -= 1
-                    outputList[personID] = pref
-                    break  # Move to next person after assigning
+        for pref in preferences:
+            if pref in preferenceDictionary and preferenceDictionary[pref] > 0:
+                preferenceDictionary[pref] -= 1
+                outputList[personID] = pref
+                break  # Move to next person after assigning
 
+
+
+    results = list(outputList.items())
+    preferences = Probabilistic_Serial.read_agent_preferences(prefFile)
     
 
-        results = list(outputList.items())
-        preferences = Probabilistic_Serial.read_agent_preferences(prefFile)
-       
-        for agent in results:
-            agent_counter += 1
-            temp_agent = agent[0]
-            temp_agent_choice = agent[1]
+    finalEgalitarian = [] #List to store all utility values for all agents, we will take minimum from this point.
+
+    for agent in results:
+        utilityPointCounter = 0
+        agent_counter += 1
+        temp_agent = agent[0]
+        temp_agent_choice = agent[1]
 
 
-            temp_list = []
+        temp_list = []
+    
+        tempy = preferences[temp_agent]
+        temp_list.append(tempy[0])
+        temp_list.append(tempy[1])
+        temp_list.append(tempy[2])
+
+        if temp_agent_choice in temp_list:
+            counter += 1
+
+
+        #Utility will work on a decreasing scale. Getting choice 1 will be 10 points, choice 2 will be 9 points, and so on. Lowest utility will be 1 point for choice 10.
+
         
-            tempy = preferences[temp_agent]
-            temp_list.append(tempy[0])
-            temp_list.append(tempy[1])
-            temp_list.append(tempy[2])
+        temp = preferences[temp_agent]
+        utility_List = []
+        
+        for temp_item in temp:
+            utility_List.append(temp_item)
 
-            if temp_agent_choice in temp_list:
-                counter += 1
+        if temp_agent_choice == utility_List[0]:
+            utilityPointCounter += 10
+        elif temp_agent_choice == utility_List[1]:
+            utilityPointCounter += 9
+        elif temp_agent_choice == utility_List[2]:
+            utilityPointCounter += 8
+        elif temp_agent_choice == utility_List[3]:
+            utilityPointCounter += 7
+        elif temp_agent_choice == utility_List[4]:
+            utilityPointCounter += 6
+        elif temp_agent_choice == utility_List[5]:
+            utilityPointCounter += 5
+        elif temp_agent_choice == utility_List[6]:
+            utilityPointCounter += 4
+        elif temp_agent_choice == utility_List[7]:
+            utilityPointCounter += 3
+        elif temp_agent_choice == utility_List[8]:
+            utilityPointCounter += 2
+        elif temp_agent_choice == utility_List[9]:
+            utilityPointCounter += 1
+        
+        finalEgalitarian.append(utilityPointCounter)
 
-            if temp_agent_choice == temp_list[0]:
-                utilityPointCounter += 3
-            elif temp_agent_choice == temp_list[1]:
-                utilityPointCounter += 1
-            else:
-                continue
-
-    return ((counter/1000)/(agent_counter/1000)) * 100, utilityPointCounter/1000
+    return ((counter/1000)/(agent_counter/1000)) * 100, min(finalEgalitarian)
 
 def statTestRandomSerialDict(prefFile,itemFile):
-    utilityPointCounter = 0 #This counter is made to make our utilit graph. We are appointing 3 points for getting 1st choice and 2 points for getting 2nd choice. All other allocations are 0 points. 
     counter = 0
     agent_counter = 0
+    finalEgalitarian = [] #List to store all utility values for all agents, we will take minimum from this point.
 
     for count in range(1,1001):
 
@@ -128,7 +242,12 @@ def statTestRandomSerialDict(prefFile,itemFile):
         results = list(outputList.items())
         preferences = Probabilistic_Serial.read_agent_preferences(prefFile)
        
+        
+
+        tempEgalList = []
+        
         for agent in results:
+            utilityPointCounter = 0
             agent_counter += 1
             temp_agent = agent[0]
             temp_agent_choice = agent[1]
@@ -144,221 +263,87 @@ def statTestRandomSerialDict(prefFile,itemFile):
             if temp_agent_choice in temp_list:
                 counter += 1
 
-            if temp_agent_choice == temp_list[0]:
+
+            #Utility will work on a decreasing scale. Getting choice 1 will be 10 points, choice 2 will be 9 points, and so on. Lowest utility will be 1 point for choice 10.
+
+            
+            temp = preferences[temp_agent]
+            utility_List = []
+    
+            
+            for temp_item in temp:
+                utility_List.append(temp_item)
+
+            if temp_agent_choice == utility_List[0]:
+                utilityPointCounter += 10
+            elif temp_agent_choice == utility_List[1]:
+                utilityPointCounter += 9
+            elif temp_agent_choice == utility_List[2]:
+                utilityPointCounter += 8
+            elif temp_agent_choice == utility_List[3]:
+                utilityPointCounter += 7
+            elif temp_agent_choice == utility_List[4]:
+                utilityPointCounter += 6
+            elif temp_agent_choice == utility_List[5]:
+                utilityPointCounter += 5
+            elif temp_agent_choice == utility_List[6]:
+                utilityPointCounter += 4
+            elif temp_agent_choice == utility_List[7]:
                 utilityPointCounter += 3
-            
-            elif temp_agent_choice == temp_list[1]:
+            elif temp_agent_choice == utility_List[8]:
+                utilityPointCounter += 2
+            elif temp_agent_choice == utility_List[9]:
                 utilityPointCounter += 1
-            
-            else:
-                continue
 
-    return ((counter/1000)/(agent_counter/1000)) * 100, utilityPointCounter/1000
-
-def statTestGS(prefGroup1,prefGroup2):
-    
-    utilityPointCounter = 0 #This counter is made to make our utilit graph. We are appointing 3 points for getting 1st choice and 2 points for getting 2nd choice. All other allocations are 0 points. 
-    counter = 0
-    agent_counter = 0
-    
-    for count in range(1,1001):
-    
-        men_prefs = Gale_Shapley.csvReader_gale(prefGroup1)
-        women_prefs = Gale_Shapley.csvReader_gale(prefGroup2)
-
-        matches = Gale_Shapley.gale_shapley(men_prefs,women_prefs)
-       
-
-        for agent in matches:
-            agent_counter += 2
-            agentGroup2 = agent[0]
-            
-            agentGroup1 = agent[1]
-          
-
-
-            temp_list1 = []
+            tempEgalList.append(utilityPointCounter)
         
-            tempy = women_prefs[agentGroup2]
-            temp_list1.append(tempy[0])
-            temp_list1.append(tempy[1])
-            temp_list1.append(tempy[2])
-        
-            
-            if agentGroup1 in temp_list1:
-                counter += 1
-            
-            if agentGroup1 == temp_list1[0]:
-                utilityPointCounter += 3
-            
-            elif agentGroup1 == temp_list1[1]:
-                utilityPointCounter += 1
-        
-
-            temp_list2 = []
-
-            tempy2 = men_prefs[agentGroup1]
-            temp_list2.append(tempy2[0])
-            temp_list2.append(tempy2[1])
-            temp_list2.append(tempy2[2])
+        finalEgalitarian.append(min(tempEgalList))
             
 
-            if agentGroup2 in temp_list2:
-                counter += 1
-            
-            if agentGroup2 == temp_list2[0]:
-                utilityPointCounter += 3
-            
-            elif agentGroup2 == temp_list2[1]:
-                utilityPointCounter += 1
-        
-            else: 
-                continue
-        
-        return ((counter/1000)/(agent_counter/1000)) * 100, utilityPointCounter/1000
+    return ((counter/1000)/(agent_counter/1000)) * 100, min(finalEgalitarian)
 
-def runTimePSR(file_path1, file_path2):
-    run_time_counter = 0
-
-    for count in range(1,1001):
-        startingTime = time.time()
-        
-        Probabilistic_Serial.probabilistic_serial(file_path1, file_path2)
-        endingTime = time.time()
-        
-        runTime = endingTime - startingTime
-        run_time_counter += runTime
-    
-    return run_time_counter/ 1000
-
-def runTimeSD(prefFile,itemFile):
-    run_time_counter = 0
-
-    for count in range(1,1001):
-        startTime = time.time()
-        peopleArray = Serial_Dictatorship_Reader.csvReader(prefFile)
-
-        preferenceDictionary = Item_Capacity_Reader.csvReader(itemFile)
-
-        outputList = {}
-
-        for personRow in peopleArray:
-            personID = personRow[0]
-            preferences = personRow[1:-1]  # Skip first (ID) and last (extra)
-
-            for pref in preferences:
-                if pref in preferenceDictionary and preferenceDictionary[pref] > 0:
-                    preferenceDictionary[pref] -= 1
-                    outputList[personID] = pref
-                    break  # Move to next person after assigning
-
-        results = list(outputList.items())
-        endTime = time.time()
-        runTime = endTime - startTime
-        run_time_counter += runTime
-    
-    return run_time_counter/ 1000
-
-def runTimeRSD(prefFile, itemFile):
-    run_time_counter = 0
-
-    for count in range(1,1001):
-        startTime = time.time()
-        peopleArray = Serial_Dictatorship_Reader.csvReader(prefFile)
-
-        random.shuffle(peopleArray)
-
-        preferenceDictionary = Item_Capacity_Reader.csvReader(itemFile)
-
-        outputList = {}
-
-        for personRow in peopleArray:
-            personID = personRow[0]
-            preferences = personRow[1:-1]  # Skip first (ID) and last (extra)
-
-            for pref in preferences:
-                if pref in preferenceDictionary and preferenceDictionary[pref] > 0:
-                    preferenceDictionary[pref] -= 1
-                    outputList[personID] = pref
-                    break  # Move to next person after assigning
-
-        results = list(outputList.items())
-        endTime = time.time()
-        runTime = endTime - startTime
-        run_time_counter += runTime
-    
-    return run_time_counter/ 1000
-
-def runTimeGS(prefGroup1, prefGroup2):
-    time_counter = 0
-    for count in range(1,1001):
-
-        startTime = time.time()
-    
-        men_prefs = Gale_Shapley.csvReader_gale(prefGroup1)
-        women_prefs = Gale_Shapley.csvReader_gale(prefGroup2)
-
-        matches = Gale_Shapley.gale_shapley(men_prefs,women_prefs)
-
-        endTime = time.time()
-        runTime = endTime - startTime
-        time_counter += runTime
-    return time_counter/ 1000
 
 
 percentagePSR = statTestPSR('Pref1.csv', 'dataItems.csv')[0]
+print(percentagePSR)
 utilityPSR = statTestPSR('Pref1.csv', 'dataItems.csv')[1]
+print(utilityPSR)
 
 
 percentageSD = statTestSerialDict('Pref1.csv','dataitems.csv')[0]
 utilitySD = statTestSerialDict('Pref1.csv','dataitems.csv')[1]
+print(percentageSD)
+print(utilitySD)
 
 
 percentageRSD = statTestRandomSerialDict('Pref1.csv','dataitems.csv')[0]
 utilityRSD = statTestRandomSerialDict('Pref1.csv','dataitems.csv')[1]
+print(percentageRSD)
+print(utilityRSD)
 
 
-percentageGS = statTestGS('Male1.csv','Female1.csv')[0]
-utilityGS = statTestGS('Male1.csv','Female1.csv')[1]
 
-#print(f'The results show that PSR has a % of {percentagePSR}, SD has a % of {percentageSD}, RSD has a % of {percentageRSD}, and GS has a % of {percentageGS}.')
-
-timePSR = runTimePSR('Pref1.csv', 'dataItems.csv')
-
-timeSD = runTimeSD('Pref1.csv','dataitems.csv')
-
-timeRSD = runTimeRSD('Pref1.csv','dataitems.csv')
-
-timeGS =runTimeGS('Male1.csv','Female1.csv')
-
-# print(timeSD)
-# print(timeRSD)
-# print(timePSR)
-# print(timeGS)
-
-
-percentageData = [percentagePSR, percentageSD, percentageRSD, percentageGS]
-utilityData = [utilityPSR, utilitySD, utilityRSD, utilityGS]
-timeData = [timePSR, timeSD, timeRSD, timeGS]
-labels = ['PSR', 'SD', 'RSD', 'GS']
+percentageData = [percentagePSR, percentageSD, percentageRSD]
+utilityData = [utilityPSR, utilitySD, utilityRSD]
+labels = ['PSR', 'SD', 'RSD',]
 
 fig, axs = plt.subplots(2, 1, figsize=(8, 10))
 
 axs[1].barh(labels, percentageData, alpha=0.5, color=['red', 'blue', 'green', 'orange'])
 for i, value in enumerate(percentageData):
     axs[1].text(value, i, f'{value:.2f}%', va='center', fontsize=8)
-axs[1].set_xlabel('Percentage')
+axs[1].set_xlabel('Probability as Percentage')
 axs[1].set_ylabel('Algorithms')
-axs[1].set_title('Percentage of Each Agent Getting Their Top 3 Choices')
+axs[1].set_title('Avg. Agent Probability of Getting Top 3 Choice')
 axs[1].set_xlim(0, max(percentageData) + 10)
 
 
 axs[0].barh(labels, utilityData, alpha=0.5, color=['red', 'blue', 'green', 'orange'])
 for i, value in enumerate(utilityData):
     axs[0].text(value, i, f'{value:.2f}', va='center', fontsize=8)
-axs[0].set_xlabel('Avg. Total Utility of Each Algorithm: 3 Points for 1st Choice, 1 Point for 2nd Choice')
+axs[0].set_xlabel('Worst-Off Agent Utility')
 axs[0].set_ylabel('Algorithms')
-axs[0].set_title('Utility of Each Algorithm')
+axs[0].set_title('Egalitarian Welfare') 
 axs[0].set_xlim(0, max(utilityData) + 10)
 
 plt.tight_layout()
