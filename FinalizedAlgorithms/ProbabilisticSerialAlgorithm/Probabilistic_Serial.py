@@ -103,55 +103,61 @@ def probabilistic_serial(preferences_path,items_path):
                     #We had issues of some fractions being very close to 0 but not 0, so this will make sure all such numbers are treated as 0 for simplicity. 
                     if remaining_capacity[current_item] <= 1e-6:
                         remaining_capacity[current_item] = 0
+    return assignments
 
-
-    #Dictionary that will be outputted with the final assignments.
-    final_assignment = {}
-
-    #Keeps track of what is remaining for each item in terms of quantity that can be allocated.
-    remaining_slots = item_capacities.copy()
-
-    # Randomize agent order to make lottery fair with less order bias.
-    agents = list(assignments.keys())
-    random.shuffle(agents)
-
-    for agent in agents:
-
-        # Sort items by descending probability
-        # This will be a dictionary of items and their probabilities for the agent.
-        item_probability = assignments[agent]
-        items = list(item_probability.items())
-        
-        items.sort(key=lambda x: -x[1])  # Sort items by descending probability
-
-        # Assign the item with the highest probability that is still available
-        for item, prob in items:
-            if remaining_slots[item] > 0 and prob > 0:
-                final_assignment[agent] = item
-                remaining_slots[item] -= 1
-                break
     
 
-    # Check for unassigned agents and items
-    # Unassigned agents are those who did not get assigned any item based on their fractional assignment.
-    unassigned_agents = []
-    unassigned_items = []
 
-    #These next 2 for loops will make a list of all unassigned agents, and also will accumulate all unassigned items and how much of the items are present. 
-    for agent in agents:
-        if agent not in final_assignment:
-            unassigned_agents.append(agent)
+    #We are disregarding the lottery assignment, and are only loooking at the fractional assignment.
+   
 
-    for items, remainder_cap in remaining_slots.items():
-        if remainder_cap > 0:
-            unassigned_items.extend([item] * int(round(remainder_cap)))
+    # #Dictionary that will be outputted with the final assignments.
+    # final_assignment = {}
 
-    #Assignments are done, and items are randomly chosen for unassigned agents. This ensures that some level of first-come first-serve bias is not present. 
-    for agent in unassigned_agents:
-        final_assignment[agent] = random.choice(unassigned_items) if unassigned_items else None
+    # #Keeps track of what is remaining for each item in terms of quantity that can be allocated.
+    # remaining_slots = item_capacities.copy()
+
+    # # Randomize agent order to make lottery fair with less order bias.
+    # agents = list(assignments.keys())
+    # random.shuffle(agents)
+
+    # for agent in agents:
+
+    #     # Sort items by descending probability
+    #     # This will be a dictionary of items and their probabilities for the agent.
+    #     item_probability = assignments[agent]
+    #     items = list(item_probability.items())
+        
+    #     items.sort(key=lambda x: -x[1])  # Sort items by descending probability
+
+    #     # Assign the item with the highest probability that is still available
+    #     for item, prob in items:
+    #         if remaining_slots[item] > 0 and prob > 0:
+    #             final_assignment[agent] = item
+    #             remaining_slots[item] -= 1
+    #             break
+    
+
+    # # Check for unassigned agents and items
+    # # Unassigned agents are those who did not get assigned any item based on their fractional assignment.
+    # unassigned_agents = []
+    # unassigned_items = []
+
+    # #These next 2 for loops will make a list of all unassigned agents, and also will accumulate all unassigned items and how much of the items are present. 
+    # for agent in agents:
+    #     if agent not in final_assignment:
+    #         unassigned_agents.append(agent)
+
+    # for items, remainder_cap in remaining_slots.items():
+    #     if remainder_cap > 0:
+    #         unassigned_items.extend([item] * int(round(remainder_cap)))
+
+    # #Assignments are done, and items are randomly chosen for unassigned agents. This ensures that some level of first-come first-serve bias is not present. 
+    # for agent in unassigned_agents:
+    #     final_assignment[agent] = random.choice(unassigned_items) if unassigned_items else None
 
 
-    return list(final_assignment.items())
+    # return list(final_assignment.items())
 
 
 # Example usage
